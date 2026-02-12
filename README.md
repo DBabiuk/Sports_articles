@@ -92,7 +92,7 @@ In a separate terminal:
 pnpm --filter backend seed
 ```
 
-This inserts 10 sample sports articles into the database.
+This inserts 15 sample sports articles into the database.
 
 ### 6. Start the Frontend
 
