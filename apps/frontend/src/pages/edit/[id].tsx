@@ -75,6 +75,7 @@ export default function EditArticlePage({
             imageUrl: data.imageUrl || null,
           },
         },
+        refetchQueries: ['GetArticles'],
       });
       router.push(`/article/${article.id}`);
     } catch (err: unknown) {

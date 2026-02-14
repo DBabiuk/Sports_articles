@@ -7,7 +7,7 @@ import { DELETE_ARTICLE } from '@/graphql/mutations';
 import Layout from '@/components/Layout';
 import ArticleCard from '@/components/ArticleCard';
 import ErrorMessage from '@/components/ErrorMessage';
-import { useState } from 'react';
+import { useState, useRef, useCallback, useTransition } from 'react';
 import { SportsArticle } from '@/types/article';
 
 const ARTICLES_PER_PAGE = 10;
@@ -53,6 +53,8 @@ export default function HomePage({
   const [loadingMore, setLoadingMore] = useState(false);
   const [deleteArticle] = useMutation(DELETE_ARTICLE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const hasMore = articles.length < totalCount;
 
@@ -64,8 +66,10 @@ export default function HomePage({
         query: GET_ARTICLES,
         variables: { offset: articles.length, limit: ARTICLES_PER_PAGE },
       });
-      setArticles((prev) => [...prev, ...data.articles.items]);
-      setTotalCount(data.articles.totalCount);
+      startTransition(() => {
+        setArticles((prev) => [...prev, ...data.articles.items]);
+        setTotalCount(data.articles.totalCount);
+      });
     } catch {
       setErrorMessage('Failed to load more articles.');
     } finally {
@@ -73,12 +77,41 @@ export default function HomePage({
     }
   };
 
+  const sentinelRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+
+      if (!node || !hasMore || loadingMore) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            handleLoadMore();
+          }
+        },
+        { threshold: 0.1 },
+      );
+
+      observer.observe(node);
+      observerRef.current = observer;
+    },
+    [hasMore, loadingMore, articles.length],
+  );
+
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this article?')) return;
 
     try {
       setErrorMessage(null);
-      await deleteArticle({ variables: { id } });
+      await deleteArticle({
+        variables: { id },
+        update(cache) {
+          cache.evict({ id: cache.identify({ __typename: 'SportsArticle', id }) });
+          cache.gc();
+        },
+      });
       setArticles((prev) => prev.filter((a) => a.id !== id));
       setTotalCount((prev) => prev - 1);
     } catch (err: unknown) {
@@ -128,14 +161,29 @@ export default function HomePage({
       )}
 
       {hasMore && (
-        <div className="mt-8 text-center">
-          <button
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-            className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
-            {loadingMore ? 'Loading...' : 'Load More'}
-          </button>
+        <div ref={sentinelRef} className="mt-8 flex justify-center py-4">
+          {loadingMore && (
+            <svg
+              className="h-8 w-8 animate-spin text-blue-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          )}
         </div>
       )}
     </Layout>

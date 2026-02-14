@@ -1,5 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
@@ -71,7 +72,14 @@ export default function ArticleDetailPage({
     if (!window.confirm('Are you sure you want to delete this article?')) return;
 
     try {
-      await deleteArticle({ variables: { id: article.id } });
+      await deleteArticle({
+        variables: { id: article.id },
+        update(cache) {
+          cache.evict({ id: cache.identify({ __typename: 'SportsArticle', id: article.id }) });
+          cache.gc();
+        },
+        refetchQueries: ['GetArticles'],
+      });
       router.push('/');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to delete article';
@@ -94,11 +102,14 @@ export default function ArticleDetailPage({
 
       <article className="overflow-hidden rounded-lg bg-white shadow-md">
         {article.imageUrl && (
-          <div className="h-64 w-full overflow-hidden sm:h-80">
-            <img
+          <div className="relative h-64 w-full overflow-hidden sm:h-80">
+            <Image
               src={article.imageUrl}
               alt={article.title}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 640px) 100vw, 80vw"
+              className="object-cover"
+              priority
             />
           </div>
         )}

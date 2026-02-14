@@ -24,6 +24,7 @@ export default function CreateArticlePage() {
             imageUrl: data.imageUrl || null,
           },
         },
+        refetchQueries: ['GetArticles'],
       });
       router.push('/');
     } catch (err: unknown) {

@@ -22,14 +22,52 @@ A fullstack Sports Articles CRUD application built with TypeScript, featuring a 
 ```
 /
 ├── apps/
-│   ├── backend/      # Express + Apollo Server v4 + TypeORM
-│   └── frontend/     # Next.js + Apollo Client + Tailwind CSS
+│   ├── backend/
+│   │   ├── Dockerfile
+│   │   └── src/
+│   │       ├── entity/         # TypeORM entities
+│   │       ├── migrations/     # Database migrations
+│   │       ├── schema/         # GraphQL type definitions & resolvers
+│   │       ├── data-source.ts  # TypeORM configuration
+│   │       ├── index.ts        # Server entry point
+│   │       └── seed.ts         # Database seed script
+│   └── frontend/
+│       ├── Dockerfile
+│       └── src/
+│           ├── components/     # React components
+│           ├── graphql/        # Queries & mutations
+│           ├── lib/            # Apollo Client setup
+│           ├── pages/          # Next.js pages (SSR)
+│           ├── types/          # TypeScript interfaces
+│           └── utils/          # Utility functions
 ├── docker-compose.yml
 ├── pnpm-workspace.yaml
 └── package.json
 ```
 
-## Getting Started
+## Quick Start (Docker — One Command)
+
+Run the entire stack with a single command:
+
+```bash
+docker compose --profile full up --build
+```
+
+This starts:
+- **PostgreSQL** on port 5433
+- **Backend** on port 4000 (runs database migrations automatically)
+- **Seed** (populates 15 sample articles, then exits)
+- **Frontend** on port 3000
+
+Open **http://localhost:3000** — articles are rendered via SSR immediately.
+
+To stop everything:
+
+```bash
+docker compose --profile full down
+```
+
+## Manual Setup (Step by Step)
 
 ### 1. Clone & Install
 
@@ -42,7 +80,7 @@ pnpm install
 ### 2. Start PostgreSQL
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This starts a PostgreSQL 16 instance on port `5433` with:
@@ -82,7 +120,7 @@ pnpm --filter backend dev
 
 The GraphQL API will be available at **http://localhost:4000/graphql**.
 
-The database tables are created automatically on first start (TypeORM `synchronize: true`).
+Database migrations run automatically on server start (`migrationsRun: true`).
 
 ### 5. Seed the Database
 
@@ -92,7 +130,7 @@ In a separate terminal:
 pnpm --filter backend seed
 ```
 
-This inserts 15 sample sports articles into the database.
+This inserts 15 sample sports articles into the database. The seed is idempotent — it skips insertion if articles already exist.
 
 ### 6. Start the Frontend
 
@@ -106,13 +144,39 @@ The frontend will be available at **http://localhost:3000**.
 
 Articles are fetched via SSR — view the page source to confirm server-side rendering.
 
+## Database Migrations
+
+Database schema is managed via TypeORM migrations located in `apps/backend/src/migrations/`.
+
+Migrations run automatically on server start (`migrationsRun: true` in `data-source.ts`).
+
+### Generate a New Migration
+
+After modifying an entity, generate a migration:
+
+```bash
+pnpm --filter backend migration:generate
+```
+
+### Run Migrations Manually
+
+```bash
+pnpm --filter backend migration:run
+```
+
+### Revert the Last Migration
+
+```bash
+pnpm --filter backend migration:revert
+```
+
 ## GraphQL API
 
 ### Queries
 
 | Query                | Description              |
 | -------------------- | ------------------------ |
-| `articles`           | List all articles        |
+| `articles(offset, limit)` | List articles (paginated) |
 | `article(id: ID!)`   | Get a single article     |
 
 ### Mutations
@@ -148,9 +212,10 @@ input ArticleInput {
 
 ### Frontend (`apps/frontend/.env`)
 
-| Variable                | Default                          | Description      |
-| ----------------------- | -------------------------------- | ---------------- |
-| NEXT_PUBLIC_GRAPHQL_URL | http://localhost:4000/graphql    | GraphQL endpoint |
+| Variable                | Default                          | Description                      |
+| ----------------------- | -------------------------------- | -------------------------------- |
+| NEXT_PUBLIC_GRAPHQL_URL | http://localhost:4000/graphql    | GraphQL endpoint (browser)       |
+| GRAPHQL_SSR_URL         | _(falls back to above)_          | GraphQL endpoint (SSR in Docker) |
 
 ## Scripts
 
@@ -167,9 +232,17 @@ pnpm --filter backend seed
 # Start frontend (dev mode)
 pnpm --filter frontend dev
 
+# Database migrations
+pnpm --filter backend migration:generate   # Generate after entity changes
+pnpm --filter backend migration:run        # Run pending migrations
+pnpm --filter backend migration:revert     # Revert last migration
+
 # Lint
 pnpm lint
 
 # Format code
 pnpm format
+
+# Docker: full stack
+docker compose --profile full up --build
 ```

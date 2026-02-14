@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import path from 'path';
 import { DataSource } from 'typeorm';
 import { SportsArticle } from './entity/SportsArticle';
 import dotenv from 'dotenv';
@@ -12,7 +13,9 @@ export const AppDataSource = new DataSource({
   username: process.env.DATABASE_USER || 'postgres',
   password: process.env.DATABASE_PASSWORD || 'postgres',
   database: process.env.DATABASE_NAME || 'sports_articles',
-  synchronize: true,
+  synchronize: false,
+  migrationsRun: process.env.SKIP_MIGRATIONS !== 'true',
   logging: false,
   entities: [SportsArticle],
+  migrations: [path.join(__dirname, 'migrations', '*.{ts,js}')],
 });

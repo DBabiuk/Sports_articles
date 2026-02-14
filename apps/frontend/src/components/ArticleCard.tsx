@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { formatDate } from '@/utils/formatDate';
 
@@ -23,11 +24,13 @@ export default function ArticleCard({
   return (
     <div className="overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg">
       {imageUrl && (
-        <div className="h-48 w-full overflow-hidden">
-          <img
+        <div className="relative h-48 w-full overflow-hidden">
+          <Image
             src={imageUrl}
             alt={title}
-            className="h-full w-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover"
           />
         </div>
       )}

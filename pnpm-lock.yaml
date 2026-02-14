@@ -41,9 +41,6 @@ importers:
       graphql:
         specifier: ^16.9.0
         version: 16.12.0
-      graphql-tag:
-        specifier: ^2.12.6
-        version: 2.12.6(graphql@16.12.0)
       pg:
         specifier: ^8.13.0
         version: 8.18.0
@@ -53,9 +50,6 @@ importers:
       typeorm:
         specifier: ^0.3.20
         version: 0.3.28(pg@8.18.0)(ts-node@10.9.2(@types/node@22.19.11)(typescript@5.9.3))
-      uuid:
-        specifier: ^10.0.0
-        version: 10.0.0
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -66,9 +60,6 @@ importers:
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.11
-      '@types/uuid':
-        specifier: ^10.0.0
-        version: 10.0.0
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@22.19.11)(typescript@5.9.3)
@@ -79,8 +70,8 @@ importers:
   apps/frontend:
     dependencies:
       '@apollo/client':
-        specifier: ^3.11.0
-        version: 3.14.0(@types/react@18.3.28)(graphql@16.12.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ~3.11.0
+        version: 3.11.10(@types/react@18.3.28)(graphql@16.12.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       graphql:
         specifier: ^16.9.0
         version: 16.12.0
@@ -127,13 +118,13 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/client@3.14.0':
-    resolution: {integrity: sha512-0YQKKRIxiMlIou+SekQqdCo0ZTHxOcES+K8vKB53cIDpwABNR0P0yRzPgsbgcj3zRJniD93S/ontsnZsCLZrxQ==}
+  '@apollo/client@3.11.10':
+    resolution: {integrity: sha512-IfGc+X4il0rDqVQBBWdxIKM+ciDCiDzBq9+Bg9z4tJMi87uF6po4v+ddiac1wP0ARgVPsFwEIGxK7jhN4pW8jg==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
-      graphql-ws: ^5.5.5 || ^6.0.3
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
+      graphql-ws: ^5.5.5
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0
       subscriptions-transport-ws: ^0.9.0 || ^0.11.0
     peerDependenciesMeta:
       graphql-ws:
@@ -489,9 +480,6 @@ packages:
 
   '@types/strip-json-comments@0.0.30':
     resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
-
-  '@types/uuid@10.0.0':
-    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
 
   '@typescript-eslint/eslint-plugin@7.18.0':
     resolution: {integrity: sha512-94EQTWZ40mzBc42ATNIBimBEDltSJ9RQHCC8vc/PDbxi4k8dVwUAv4o98dk50M1zB+JGFxp43FP7f8+FP8R6Sw==}
@@ -1654,6 +1642,10 @@ packages:
     engines: {node: '>= 0.4'}
     hasBin: true
 
+  response-iterator@0.2.25:
+    resolution: {integrity: sha512-15K4tT8X35W0zJ5bv3fAf4eEKqOwS7yzd+Bg6YEE9NLltVbPbuTcYo3J2AP6AMQGMJmJkFCG421+kP2/iCBfDA==}
+    engines: {node: '>=0.8'}
+
   retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
@@ -2007,10 +1999,6 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    hasBin: true
-
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
@@ -2102,7 +2090,7 @@ snapshots:
     dependencies:
       graphql: 16.12.0
 
-  '@apollo/client@3.14.0(@types/react@18.3.28)(graphql@16.12.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@apollo/client@3.11.10(@types/react@18.3.28)(graphql@16.12.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.12.0)
       '@wry/caches': 1.0.1
@@ -2114,6 +2102,7 @@ snapshots:
       optimism: 0.18.1
       prop-types: 15.8.1
       rehackt: 0.1.0(@types/react@18.3.28)(react@18.3.1)
+      response-iterator: 0.2.25
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.8.1
@@ -2482,8 +2471,6 @@ snapshots:
   '@types/strip-bom@3.0.0': {}
 
   '@types/strip-json-comments@0.0.30': {}
-
-  '@types/uuid@10.0.0': {}
 
   '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
@@ -3611,6 +3598,8 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
+  response-iterator@0.2.25: {}
+
   retry@0.13.1: {}
 
   reusify@1.1.0: {}
@@ -3959,8 +3948,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   utils-merge@1.0.1: {}
-
-  uuid@10.0.0: {}
 
   uuid@11.1.0: {}
 
