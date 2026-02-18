@@ -26,6 +26,16 @@ export default function ArticleForm({
     const newErrors: string[] = [];
     if (!title.trim()) newErrors.push('Title is required');
     if (!content.trim()) newErrors.push('Content is required');
+    if (imageUrl.trim()) {
+      try {
+        const url = new URL(imageUrl.trim());
+        if (!['http:', 'https:'].includes(url.protocol)) {
+          newErrors.push('Image URL must start with http:// or https://');
+        }
+      } catch {
+        newErrors.push('Image URL is not a valid URL');
+      }
+    }
     setErrors(newErrors);
     return newErrors.length === 0;
   };

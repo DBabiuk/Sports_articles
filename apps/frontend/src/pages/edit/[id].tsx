@@ -18,7 +18,10 @@ interface PageProps {
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
-  const { id } = context.params as { id: string };
+  const id = context.params?.id;
+  if (!id || typeof id !== 'string') {
+    return { notFound: true };
+  }
 
   try {
     const client = createApolloClient();

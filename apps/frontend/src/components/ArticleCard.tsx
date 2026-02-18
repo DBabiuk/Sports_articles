@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { formatDate } from '@/utils/formatDate';
 
 interface ArticleCardProps {
@@ -19,11 +20,12 @@ export default function ArticleCard({
   imageUrl,
   onDelete,
 }: ArticleCardProps) {
+  const [imgError, setImgError] = useState(false);
   const formattedDate = createdAt ? formatDate(createdAt) : null;
 
   return (
     <div className="overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg">
-      {imageUrl && (
+      {imageUrl && !imgError && (
         <div className="relative h-48 w-full overflow-hidden">
           <Image
             src={imageUrl}
@@ -31,6 +33,7 @@ export default function ArticleCard({
             fill
             sizes="(max-width: 640px) 100vw, 50vw"
             className="object-cover"
+            onError={() => setImgError(true)}
           />
         </div>
       )}

@@ -19,7 +19,10 @@ interface PageProps {
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
-  const { id } = context.params as { id: string };
+  const id = context.params?.id;
+  if (!id || typeof id !== 'string') {
+    return { notFound: true };
+  }
 
   try {
     const client = createApolloClient();
@@ -52,6 +55,7 @@ export default function ArticleDetailPage({
   const router = useRouter();
   const [deleteArticle] = useMutation(DELETE_ARTICLE);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   if (error || !article) {
     return (
@@ -101,7 +105,7 @@ export default function ArticleDetailPage({
       </div>
 
       <article className="overflow-hidden rounded-lg bg-white shadow-md">
-        {article.imageUrl && (
+        {article.imageUrl && !imgError && (
           <div className="relative h-64 w-full overflow-hidden sm:h-80">
             <Image
               src={article.imageUrl}
@@ -110,6 +114,7 @@ export default function ArticleDetailPage({
               sizes="(max-width: 640px) 100vw, 80vw"
               className="object-cover"
               priority
+              onError={() => setImgError(true)}
             />
           </div>
         )}
