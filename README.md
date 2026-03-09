@@ -1,6 +1,8 @@
 # Sports Articles — Fullstack Monorepo
 
 A fullstack Sports Articles CRUD application built with TypeScript, featuring a GraphQL API and a server-side rendered frontend.
+![App Screenshot](assets/screenshot1.png)
+![App Screenshot](assets/screenshot2.png)
 
 ## Tech Stack
 
